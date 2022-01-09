@@ -1,5 +1,6 @@
 import './App.css';
 import {useState} from "react";
+import Axios from 'axios';
 
 function App() {
 
@@ -10,9 +11,40 @@ function App() {
   const [country, setCountry] = useState("");
   const [opened_year, setOpenedYear] = useState(0);
 
-  const displayInfo = () => {
-    console.log(name + height + speed + park + country + opened_year );
+  const [coasters_list, setCoastersList] = useState([]);
+
+  const add_Coasters = () => {
+    Axios.post('http://localhost:3001/create',{
+      name: name,
+      height: height,
+      speed: speed,
+      park: park,
+      country: country,
+      opened_year: opened_year,
+    }).then(() => {
+      setCoastersList([
+        ...coasters_list,
+        {
+          name: name,
+          height: height,
+          speed: speed,
+          park: park,
+          country: country,
+          opened_year: opened_year,
+        },
+      ])
+    });
   };
+
+  const get_Coasters = () => {
+    Axios.get('http://localhost:3001/coasters').then((response) => {
+      setCoastersList(response.data);
+    });
+  }
+
+  // const displayInfo = () => {
+  //   console.log(name + height + speed + park + country + opened_year );
+  // };
   return (
     <div className="App">
       <div className="information">
@@ -58,8 +90,26 @@ function App() {
             setOpenedYear(event.target.value);
           }}
            />
-        <button onClick={displayInfo}>ジェットコースターを登録する</button>
+        <button onClick={add_Coasters}>ジェットコースターを登録する</button>
       </div>
+      
+      <div className="coasters">
+        <button onClick={get_Coasters}>Show Rollercoasters</button>
+
+        {coasters_list.map((val, key) => {
+          return (
+            <div className="coaster">
+             <h3>ジェットコースター名: {val.name}</h3>
+             <h3>高さ: {val.height}</h3>
+             <h3>速さ（kph）: {val.speed}</h3>
+             <h3>遊園地: {val.park}</h3>
+             <h3>国: {val.country}</h3>
+             <h3>開業年: {val.opened_year}</h3>
+            </div>
+          );
+        })}
+      </div>
+      
     </div>
   );
 }
