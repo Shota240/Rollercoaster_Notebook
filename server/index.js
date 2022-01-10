@@ -2,9 +2,10 @@ const express = require('express');
 const app = express();
 const mysql = require('mysql');
 const cors = require('cors');
+const deleted_off = 0;
 
 app.use(cors());
-app.use(express.json())
+app.use(express.json());
 
 const db = mysql.createConnection({
     user: "root",
@@ -21,17 +22,18 @@ app.post('/create', (req, res) => {
     const park = req.body.park;
     const country = req.body.country;
     const opened_year = req.body.opened_year;
+    const is_deleted = deleted_off;
 
     db.query(
-        "INSERT INTO coasters (name, height, speed, park, country, opened_year) VALUES (?,?,?,?,?,?)",
-        [name, height, speed, park, country, opened_year],
-        (err, result) => {
-            if (err) {
-                console.log(err);
-            } else {
-                res.send("Values Inserted");
-            }
+      "INSERT INTO coasters (name, height, speed, park, country, opened_year) VALUES (?,?,?,?,?,?)",
+      [name, height, speed, park, country, opened_year, is_deleted],
+      (err, result) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.send("Values Inserted");
         }
+      }
     );
 })
 
@@ -44,6 +46,21 @@ app.get('/coasters', (req, res) => {
         }
     });
 });
+
+app.put('/update', (req, res) => {
+    const id = req.body.id;
+    const height = req.body.height;
+    db.query("UPDATE coasters SET height = ? WHERE id = ?",
+    [height, id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send(result);
+        }
+    })
+})
+
+// app.delete()
 
 app.listen(3001, ()=> {
     console.log("yey, my server is running on port 3001!!!");

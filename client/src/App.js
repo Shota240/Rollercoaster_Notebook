@@ -1,20 +1,22 @@
-import './App.css';
-import {useState} from "react";
-import Axios from 'axios';
+import "./App.css";
+import { useState } from "react";
+import Axios from "axios";
 
 function App() {
-
   const [name, setName] = useState("");
   const [height, setHeight] = useState(0);
   const [speed, setSpeed] = useState(0);
   const [park, setPark] = useState("");
   const [country, setCountry] = useState("");
   const [opened_year, setOpenedYear] = useState(0);
+  // const [is_deleted, ] = useState(0);
 
+  const [new_height, setNewHeight] = useState(0);
+  
   const [coasters_list, setCoastersList] = useState([]);
 
   const add_Coasters = () => {
-    Axios.post('http://localhost:3001/create',{
+    Axios.post("http://localhost:3001/create", {
       name: name,
       height: height,
       speed: speed,
@@ -32,14 +34,35 @@ function App() {
           country: country,
           opened_year: opened_year,
         },
-      ])
+      ]);
     });
   };
 
   const get_Coasters = () => {
-    Axios.get('http://localhost:3001/coasters').then((response) => {
+    Axios.get("http://localhost:3001/coasters").then((response) => {
       setCoastersList(response.data);
     });
+  };
+
+  const update_coasters_height = (id) => {
+    Axios.put("http://localhost:3001/update", { height: new_height, id: id}).then(
+      (response) => {
+        setCoastersList(
+          coasters_list.map((val) => {
+          return val.id == id
+            ? {
+                id: val.id,
+                name: val.name,
+                height: new_height,
+                speed: val.speed,
+                park: val.park,
+                country: val.country,
+                opened_year: val.opened_year,
+              }
+            : val;
+        }));
+      }
+    );
   }
 
   // const displayInfo = () => {
@@ -49,67 +72,79 @@ function App() {
     <div className="App">
       <div className="information">
         <label>ジェットコースター名:</label>
-        <input 
+        <input
           type="text"
           onChange={(event) => {
             setName(event.target.value);
           }}
-          />
+        />
         <label>高さ:</label>
         <input
-          type="number" 
+          type="number"
           onChange={(event) => {
             setHeight(event.target.value);
           }}
-          />
+        />
         <label>速さ（kph）:</label>
         <input
           type="number"
           onChange={(event) => {
             setSpeed(event.target.value);
           }}
-           />
+        />
         <label>遊園地:</label>
         <input
           type="text"
           onChange={(event) => {
             setPark(event.target.value);
           }}
-           />
+        />
         <label>国:</label>
         <input
           type="text"
           onChange={(event) => {
             setCountry(event.target.value);
           }}
-           />
+        />
         <label>開業年:</label>
         <input
           type="number"
           onChange={(event) => {
             setOpenedYear(event.target.value);
           }}
-           />
+        />
         <button onClick={add_Coasters}>ジェットコースターを登録する</button>
       </div>
-      
+
       <div className="coasters">
         <button onClick={get_Coasters}>Show Rollercoasters</button>
 
         {coasters_list.map((val, key) => {
           return (
             <div className="coaster">
-             <h3>ジェットコースター名: {val.name}</h3>
-             <h3>高さ: {val.height}</h3>
-             <h3>速さ（kph）: {val.speed}</h3>
-             <h3>遊園地: {val.park}</h3>
-             <h3>国: {val.country}</h3>
-             <h3>開業年: {val.opened_year}</h3>
+              <div>
+                <h3>ジェットコースター名: {val.name}</h3>
+                <h3>高さ: {val.height}</h3>
+                <h3>速さ（kph）: {val.speed}</h3>
+                <h3>遊園地: {val.park}</h3>
+                <h3>国: {val.country}</h3>
+                <h3>開業年: {val.opened_year}</h3>
+              </div>
+              <div>
+                {""}
+                <input
+                  type="text"
+                  placeholder="10.."
+                  onChange={(event) => {
+                    setNewHeight(event.target.value);
+                  }}
+                />
+                <button onClick={() => {update_coasters_height(val.id)}}> Update</button>
+              </div>
             </div>
           );
         })}
       </div>
-      
     </div>
   );
 }
