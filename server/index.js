@@ -3,6 +3,7 @@ const app = express();
 const mysql = require('mysql');
 const cors = require('cors');
 const deleted_off = 0;
+const deleted_on = 1;
 
 app.use(cors());
 app.use(express.json());
@@ -38,13 +39,17 @@ app.post('/create', (req, res) => {
 })
 
 app.get('/coasters', (req, res) => {
-    db.query("SELECT * FROM coasters", (err, result) => {
+    const is_deleted = deleted_off;
+    db.query(
+      "SELECT * FROM coasters WHERE is_deleted = ?",
+      is_deleted ,(err, result) => {
         if (err) {
-            console.log(err);
+          console.log(err);
         } else {
-            res.send(result);
+          res.send(result);
         }
-    });
+      }
+    );
 });
 
 app.put('/update', (req, res) => {
@@ -60,7 +65,22 @@ app.put('/update', (req, res) => {
     })
 })
 
-// app.delete()
+app.put("/delete", (req, res) => {
+  const id = req.body.id;
+  const is_deleted = deleted_on;
+
+  db.query(
+    "UPDATE coasters SET is_deleted = ? WHERE id = ?",
+    [is_deleted, id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
 
 app.listen(3001, ()=> {
     console.log("yey, my server is running on port 3001!!!");
