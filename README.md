@@ -1,5 +1,5 @@
 # Rollercoaster_Notebook
-ReactとNode.js学習用の、シンプルなCRUDアプリです。
+ReactとNode.js学習用の、シンプルなCRUDアプリ。
 
 せっかくなので、自分が好きなジェットコースターのスペックや、どこのパーク・国のものなのかを備忘的に残せる
 アプリにします。
