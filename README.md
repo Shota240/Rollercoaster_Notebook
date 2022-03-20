@@ -1,11 +1,10 @@
 # Rollercoaster_Notebook
 ReactとNode.js学習用の、シンプルなCRUDアプリ。
 
+This is simple CRUD application for my React & Node.js learning.
+
 # components
 Axios
-
-
-This is simple CRUD application for my React & Node.js learning.
 
 # Features
 学習用とはいえせっかくなので、自分が好きなジェットコースターのスペックや、
