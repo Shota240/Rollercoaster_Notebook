@@ -1,5 +1,6 @@
 # Rollercoaster_Notebook
 ReactとNode.js学習用の、シンプルなCRUDアプリ。
+画面遷移なしで情報登録、削除が可能
 
 This is simple CRUD application for my React & Node.js learning.
 
